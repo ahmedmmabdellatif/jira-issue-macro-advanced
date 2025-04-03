@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jira Issues Advanced Macro</title>
+  <link rel="stylesheet" href="https://unpkg.com/@atlaskit/css-reset@6.0.5/dist/bundle.css" />
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://connect-cdn.atl-paas.net/all.js"></script>
+</head>
+<body>
+  <div id="jira-issues-app" class="jira-issues-container">
+    <div id="loading-container" class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading Jira Issues Advanced...</div>
+    </div>
+    
+    <div id="error-container" class="error-container" style="display: none;">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title">Error</div>
+      <div id="error-message" class="error-message">An error occurred while loading the macro.</div>
+      <button id="retry-button" class="retry-button">Retry</button>
+    </div>
+    
+    <div id="editor-container" style="display: none;"></div>
+    <div id="renderer-container" style="display: none;"></div>
+  </div>
+
+  <!-- Load error handling and initialization scripts -->
+  <script src="js/error-handling.js"></script>
+  <script src="js/loading.js"></script>
+  <script src="js/viewport.js"></script>
+  <script src="js/initialize.js"></script>
+  
+  <!-- Load React and main application bundle -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="js/main.bundle.js"></script>
+</body>
+</html>

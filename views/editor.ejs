@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jira Issues Advanced Macro Editor</title>
+  <link rel="stylesheet" href="https://unpkg.com/@atlaskit/css-reset@6.0.5/dist/bundle.css" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      color: #172B4D;
+      margin: 0;
+      padding: 20px;
+    }
+    .editor-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 2px solid #DFE1E6;
+      border-radius: 3px;
+      box-sizing: border-box;
+    }
+    .form-control:focus {
+      border-color: #4C9AFF;
+      outline: none;
+    }
+    .radio-group {
+      display: flex;
+      gap: 16px;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+    }
+    .radio-option input {
+      margin-right: 8px;
+    }
+    .columns-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .column-option {
+      display: flex;
+      align-items: center;
+      background-color: #F4F5F7;
+      padding: 4px 8px;
+      border-radius: 3px;
+    }
+    .column-option input {
+      margin-right: 8px;
+    }
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 30px;
+    }
+    .button {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 3px;
+      cursor: pointer;
+      border: none;
+    }
+    .button-primary {
+      background-color: #0052CC;
+      color: white;
+    }
+    .button-secondary {
+      background-color: #F4F5F7;
+      color: #42526E;
+    }
+    .error-message {
+      color: #DE350B;
+      padding: 10px;
+      background-color: #FFEBE6;
+      border-radius: 3px;
+      margin-bottom: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="editor-container">
+    <h2>Configure Jira Issues Macro</h2>
+    
+    <div id="error-message" class="error-message"></div>
+    
+    <form id="macro-editor-form">
+      <div class="form-group">
+        <label for="jql-query">JQL Query</label>
+        <textarea id="jql-query" class="form-control" rows="3" placeholder="e.g., project = 'PROJECT' AND status = 'Open'"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Display Type</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="display-table" name="display-type" value="table" checked>
+            <label for="display-table">Table</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="display-single" name="display-type" value="single">
+            <label for="display-single">Single Issue</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="display-count" name="display-type" value="count">
+            <label for="display-count">Issue Count</label>
+          </div>
+        </div>
+      </div>
+      
+      <div id="table-options" class="form-group">
+        <label>Columns to Display</label>
+        <div class="columns-container">
+          <div class="column-option">
+            <input type="checkbox" id="column-key" value="key" checked>
+            <label for="column-key">Key</label>
+          </div>
+          <div class="column-option">
+            <input type="checkbox" id="column-summary" value="summary" checked>
+            <label for="column-summary">Summary</label>
+          </div>
+          <div class="column-option">
+            <input type="checkbox" id="column-status" value="status" checked>
+            <label for="column-status">Status</label>
+          </div>
+          <div class="column-option">
+            <input type="checkbox" id="column-assignee" value="assignee">
+            <label for="column-assignee">Assignee</label>
+          </div>
+          <div class="column-option">
+            <input type="checkbox" id="column-priority" value="priority">
+            <label for="column-priority">Priority</label>
+          </div>
+          <div class="column-option">
+            <input type="checkbox" id="column-created" value="created">
+            <label for="column-created">Created</label>
+          </div>
+          <div class="column-option">
+            <input type="checkbox" id="column-updated" value="updated">
+            <label for="column-updated">Updated</label>
+          </div>
+        </div>
+      </div>
+      
+      <div id="max-results-group" class="form-group">
+        <label for="max-results">Maximum Results</label>
+        <input type="number" id="max-results" class="form-control" value="10" min="1" max="100">
+      </div>
+      
+      <div class="button-group">
+        <button type="button" id="cancel-button" class="button button-secondary">Cancel</button>
+        <button type="button" id="submit-button" class="button button-primary">Insert</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Get query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const macroParams = {};
+    for (const [key, value] of urlParams.entries()) {
+      if (key.startsWith('macro-')) {
+        macroParams[key.substring(6)] = value;
+      }
+    }
+    
+    // Populate form with existing values if editing
+    if (macroParams.jqlQuery) {
+      document.getElementById('jql-query').value = macroParams.jqlQuery;
+    }
+    
+    if (macroParams.displayType) {
+      document.querySelector(`input[name="display-type"][value="${macroParams.displayType}"]`).checked = true;
+    }
+    
+    if (macroParams.columns) {
+      const columns = macroParams.columns.split(',');
+      document.querySelectorAll('.column-option input').forEach(checkbox => {
+        checkbox.checked = columns.includes(checkbox.value);
+      });
+    }
+    
+    if (macroParams.maxResults) {
+      document.getElementById('max-results').value = macroParams.maxResults;
+    }
+    
+    // Show/hide options based on display type
+    function updateDisplayOptions() {
+      const displayType = document.querySelector('input[name="display-type"]:checked').value;
+      const tableOptions = document.getElementById('table-options');
+      const maxResultsGroup = document.getElementById('max-results-group');
+      
+      if (displayType === 'table') {
+        tableOptions.style.display = 'block';
+        maxResultsGroup.style.display = 'block';
+      } else if (displayType === 'single') {
+        tableOptions.style.display = 'none';
+        maxResultsGroup.style.display = 'none';
+      } else if (displayType === 'count') {
+        tableOptions.style.display = 'none';
+        maxResultsGroup.style.display = 'none';
+      }
+    }
+    
+    // Add event listeners
+    document.querySelectorAll('input[name="display-type"]').forEach(radio => {
+      radio.addEventListener('change', updateDisplayOptions);
+    });
+    
+    document.getElementById('submit-button').addEventListener('click', () => {
+      const jqlQuery = document.getElementById('jql-query').value.trim();
+      if (!jqlQuery) {
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = 'JQL Query is required';
+        errorMessage.style.display = 'block';
+        return;
+      }
+      
+      const displayType = document.querySelector('input[name="display-type"]:checked').value;
+      
+      let columns = [];
+      if (displayType === 'table') {
+        document.querySelectorAll('.column-option input:checked').forEach(checkbox => {
+          columns.push(checkbox.value);
+        });
+        
+        if (columns.length === 0) {
+          const errorMessage = document.getElementById('error-message');
+          errorMessage.textContent = 'Please select at least one column to display';
+          errorMessage.style.display = 'block';
+          return;
+        }
+      }
+      
+      const maxResults = displayType === 'table' ? document.getElementById('max-results').value : '1';
+      
+      // Prepare macro parameters
+      const macroParams = {
+        jqlQuery,
+        displayType,
+        columns: columns.join(','),
+        maxResults
+      };
+      
+      // Send message to Confluence
+      if (window.AP) {
+        window.AP.require(['confluence'], function(confluence) {
+          confluence.saveMacro(macroParams);
+          confluence.closeMacroEditor();
+        });
+      }
+    });
+    
+    document.getElementById('cancel-button').addEventListener('click', () => {
+      if (window.AP) {
+        window.AP.require(['confluence'], function(confluence) {
+          confluence.closeMacroEditor();
+        });
+      }
+    });
+    
+    // Initialize display options
+    updateDisplayOptions();
+    
+    // Initialize Atlassian Connect
+    if (window.AP) {
+      window.AP.require(['confluence'], function(confluence) {
+        confluence.getMacroData(function(macroData) {
+          if (macroData) {
+            document.getElementById('jql-query').value = macroData.jqlQuery || '';
+            
+            if (macroData.displayType) {
+              document.querySelector(`input[name="display-type"][value="${macroData.displayType}"]`).checked = true;
+            }
+            
+            if (macroData.columns) {
+              const columns = macroData.columns.split(',');
+              document.querySelectorAll('.column-option input').forEach(checkbox => {
+                checkbox.checked = columns.includes(checkbox.value);
+              });
+            }
+            
+            if (macroData.maxResults) {
+              document.getElementById('max-results').value = macroData.maxResults;
+            }
+            
+            updateDisplayOptions();
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

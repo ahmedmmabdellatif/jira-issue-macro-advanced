@@ -1,0 +1,200 @@
+/* Main styles for Jira Issues Advanced Macro */
+
+/* Base container */
+.jira-issues-container {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  color: #172B4D;
+  padding: 10px;
+  max-width: 100%;
+}
+
+/* Loading indicator */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  border: 4px solid #F4F5F7;
+  border-top: 4px solid #0052CC;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1.5s linear infinite;
+  margin-bottom: 16px;
+}
+
+.loading-text {
+  font-size: 14px;
+  color: #42526E;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error display */
+.error-container {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  background-color: #FFEBE6;
+  border-radius: 3px;
+  margin: 10px 0;
+}
+
+.error-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.error-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #DE350B;
+  margin-bottom: 8px;
+}
+
+.error-message {
+  font-size: 14px;
+  color: #42526E;
+  margin-bottom: 16px;
+}
+
+.retry-button {
+  background-color: #0052CC;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.retry-button:hover {
+  background-color: #0747A6;
+}
+
+/* Jira issues table */
+.jira-issues-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.jira-issues-table th {
+  background-color: #F4F5F7;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid #DFE1E6;
+  font-weight: 600;
+}
+
+.jira-issues-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #DFE1E6;
+}
+
+.jira-issues-table tr:hover {
+  background-color: #F4F5F7;
+}
+
+.jira-issue-key {
+  color: #0052CC;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.jira-issue-key:hover {
+  text-decoration: underline;
+}
+
+.jira-issue-status {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.jira-issue-status-new {
+  background-color: #E2FCEF;
+  color: #006644;
+}
+
+.jira-issue-status-indeterminate {
+  background-color: #DEEBFF;
+  color: #0747A6;
+}
+
+.jira-issue-status-done {
+  background-color: #DFE1E6;
+  color: #42526E;
+}
+
+/* Single issue view */
+.jira-single-issue {
+  border: 1px solid #DFE1E6;
+  border-radius: 3px;
+  padding: 12px;
+  margin: 10px 0;
+}
+
+.jira-single-issue-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.jira-single-issue-summary {
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+/* Issue count view */
+.jira-issue-count {
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.jira-issue-count a {
+  color: #0052CC;
+  text-decoration: none;
+}
+
+.jira-issue-count a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive styles */
+.viewport-xs .jira-issues-table {
+  font-size: 12px;
+}
+
+.viewport-xs .jira-issues-table th,
+.viewport-xs .jira-issues-table td {
+  padding: 6px 8px;
+}
+
+.viewport-xs .jira-issue-status {
+  font-size: 10px;
+  padding: 1px 4px;
+}
+
+/* Fallback content */
+.fallback-editor,
+.fallback-renderer {
+  padding: 20px;
+  background-color: #F4F5F7;
+  border-radius: 3px;
+  text-align: center;
+}

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jira Issues Advanced Macro</title>
+  <link rel="stylesheet" href="https://unpkg.com/@atlaskit/css-reset@6.0.5/dist/bundle.css" />
+  <style>
+    .jira-issues-container {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      color: #172B4D;
+    }
+    .jira-issues-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .jira-issues-table th {
+      background-color: #F4F5F7;
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 2px solid #DFE1E6;
+      font-weight: 600;
+    }
+    .jira-issues-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #DFE1E6;
+    }
+    .jira-issues-table tr:hover {
+      background-color: #F4F5F7;
+    }
+    .jira-issue-key {
+      color: #0052CC;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .jira-issue-key:hover {
+      text-decoration: underline;
+    }
+    .jira-issue-status {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .jira-issue-status-open {
+      background-color: #E2FCEF;
+      color: #006644;
+    }
+    .jira-issue-status-inprogress {
+      background-color: #DEEBFF;
+      color: #0747A6;
+    }
+    .jira-issue-status-done {
+      background-color: #DFE1E6;
+      color: #42526E;
+    }
+    .jira-issue-count {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    .jira-issue-count a {
+      color: #0052CC;
+      text-decoration: none;
+    }
+    .jira-issue-count a:hover {
+      text-decoration: underline;
+    }
+    .jira-single-issue {
+      border: 1px solid #DFE1E6;
+      border-radius: 3px;
+      padding: 12px;
+      margin: 10px 0;
+    }
+    .jira-single-issue-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .jira-single-issue-summary {
+      margin-left: 8px;
+      font-weight: 500;
+    }
+    .jira-error-message {
+      color: #DE350B;
+      padding: 10px;
+      background-color: #FFEBE6;
+      border-radius: 3px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="jira-issues-container">
+    <% if (displayType === 'table' && issues && issues.length > 0) { %>
+      <table class="jira-issues-table">
+        <thead>
+          <tr>
+            <% columns.forEach(column => { %>
+              <th><%= column.charAt(0).toUpperCase() + column.slice(1) %></th>
+            <% }); %>
+          </tr>
+        </thead>
+        <tbody>
+          <% issues.forEach(issue => { %>
+            <tr>
+              <% columns.forEach(column => { %>
+                <% if (column === 'key') { %>
+                  <td>
+                    <a href="<%= jiraBaseUrl %>/browse/<%= issue.key %>" class="jira-issue-key" target="_blank">
+                      <%= issue.key %>
+                    </a>
+                  </td>
+                <% } else if (column === 'status') { %>
+                  <td>
+                    <span class="jira-issue-status jira-issue-status-<%= issue.fields.status.statusCategory.key.toLowerCase() %>">
+                      <%= issue.fields.status.name %>
+                    </span>
+                  </td>
+                <% } else { %>
+                  <td><%= issue.fields[column] || '' %></td>
+                <% } %>
+              <% }); %>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <div>
+        Showing <%= issues.length %> of <%= totalIssues %> issues
+      </div>
+    <% } else if (displayType === 'single' && issues && issues.length > 0) { %>
+      <div class="jira-single-issue">
+        <div class="jira-single-issue-header">
+          <a href="<%= jiraBaseUrl %>/browse/<%= issues[0].key %>" class="jira-issue-key" target="_blank">
+            <%= issues[0].key %>
+          </a>
+          <span class="jira-single-issue-summary"><%= issues[0].fields.summary %></span>
+        </div>
+        <div class="jira-single-issue-status">
+          Status: 
+          <span class="jira-issue-status jira-issue-status-<%= issues[0].fields.status.statusCategory.key.toLowerCase() %>">
+            <%= issues[0].fields.status.name %>
+          </span>
+        </div>
+      </div>
+    <% } else if (displayType === 'count') { %>
+      <div class="jira-issue-count">
+        <a href="<%= jiraBaseUrl %>/issues/?jql=<%= encodeURIComponent(jqlQuery) %>" target="_blank">
+          <%= totalIssues %> issue<%= totalIssues !== 1 ? 's' : '' %> found
+        </a>
+      </div>
+    <% } else { %>
+      <div class="jira-error-message">
+        No issues found matching the query: <%= jqlQuery %>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

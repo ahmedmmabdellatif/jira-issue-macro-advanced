@@ -1,0 +1,45 @@
+{
+  "name": "Jira Issue Macro Advanced",
+  "description": "An advanced implementation of the Jira issue macro for Confluence",
+  "key": "com.jira-issue-macro-advanced",
+  "baseUrl": "https://ahmedmmabdellatif.github.io/jira-issue-macro-advanced",
+  "vendor": {
+    "name": "Ahmed Abdellatif",
+    "url": "https://github.com/ahmedmmabdellatif/jira-issue-macro-advanced"
+  },
+  "authentication": {
+    "type": "none"
+  },
+  "apiVersion": 1,
+  "modules": {
+    "dynamicContentMacros": [
+      {
+        "key": "jira-issues-advanced-macro",
+        "name": {
+          "value": "Jira Issues Advanced"
+        },
+        "url": "/index.html",
+        "description": {
+          "value": "Display Jira issues with advanced formatting and filtering options"
+        },
+        "outputType": "block",
+        "bodyType": "none",
+        "editor": {
+          "url": "/index.html?mode=editor",
+          "editTitle": {
+            "value": "Edit Jira Issues Advanced"
+          },
+          "width": "80%",
+          "height": "70%"
+        },
+        "icon": {
+          "url": "/images/jira-icon.png"
+        },
+        "categories": [
+          "external-content",
+          "development"
+        ]
+      }
+    ]
+  }
+}
