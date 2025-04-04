@@ -16,11 +16,12 @@
       rendererContainer.style.display = 'block';
       
       // Get macro parameters from Confluence
-      AP.confluence.getMacroData(function(data) {
+      // Using AP.getContext() instead of AP.confluence.getMacroData()
+      AP.getContext(function(context) {
         // Default values if no data is provided
-        const project = data.project || 'TEST';
-        const status = data.status || '';
-        const display = data.display || 'table';
+        const project = context.extension?.parameters?.project || 'TEST';
+        const status = context.extension?.parameters?.status || '';
+        const display = context.extension?.parameters?.display || 'table';
         
         // Render the appropriate view based on display type
         if (display === 'count') {
